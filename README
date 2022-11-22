@@ -1,5 +1,6 @@
 peek is a little utility that lets you run a command on a file
 without changing its access and modification time.
+For more information about it's usage check `man peek`.
 
 In order to build this program you need to run `make`.
 
