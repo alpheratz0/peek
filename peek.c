@@ -8,23 +8,19 @@ main(int argc, char **argv)
 {
 	struct stat sb;
 	struct utimbuf ub;
-	const char *fname;
 	pid_t pid;
 	int status;
 
-	fname = *++argv;
-	++argv;
-
-	stat(fname, &sb);
+	stat(argv[argc-1], &sb);
 	ub.actime = sb.st_atime;
 	ub.modtime = sb.st_mtime;
 	pid = fork();
 
 	if (pid == 0) {
-		execvp(*argv, argv);
+		execvp(argv[1], &argv[1]);
 	} else {
 		waitpid(pid, &status, 0);
-		utime(fname, &ub);
+		utime(argv[argc-1], &ub);
 	}
 
 	return 0;
