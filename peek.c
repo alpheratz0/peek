@@ -30,11 +30,13 @@ main(int argc, char **argv)
 
 	if (argc < 2)
 		return 1;
+	if (!strcmp(argv[1], "-h"))
+		usage();
+	if (!strcmp(argv[1], "-v"))
+		version();
+	if (stat(argv[argc-1], &sb) < 0)
+		return 2;
 
-	if (!strcmp(argv[1], "-h")) usage();
-	if (!strcmp(argv[1], "-v")) version();
-
-	stat(argv[argc-1], &sb);
 	ub.actime = sb.st_atime;
 	ub.modtime = sb.st_mtime;
 	pid = fork();
