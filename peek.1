@@ -1,0 +1,32 @@
+.Dd November 22, 2022
+.Dt PEEK 1
+.Sh NAME
+.Nm peek
+.Nd peek files without changing modification/access time
+.Sh SYNOPSIS
+.Nm
+.Op Fl hv
+.Op cmd ...args filename
+.Sh DESCRIPTION
+The
+.Nm
+utility lets you run a command on a file without changing its access and modification time.
+.Sh OPTIONS
+.Bl -tag -width indent
+.It Fl h
+show usage
+.It Fl v
+display the program version
+.El
+.Sh EXAMPLES
+.Bl -tag -width indent
+.It edit a file without changing mod/access time
+peek vim hello.txt
+.El
+.Sh SEE ALSO
+.Xr stat 2
+.Xr utime 2
+.Sh AUTHORS
+.An alpheratz0 Aq Mt alpheratz99@protonmail.com
+.Sh BUGS
+https://github.com/alpheratz0/peek/issues

@@ -8,3 +8,4 @@ CFLAGS    = -ansi -pedantic -Wall -Wextra -Os -DVERSION=\"$(VERSION)\"
 LDFLAGS   = -s
 
 PREFIX    = /usr/local
+MANPREFIX = $(PREFIX)/share/man
