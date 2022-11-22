@@ -1,7 +1,24 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <utime.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+
+static void
+usage(void)
+{
+	puts("usage: peek [-hv] [cmd [...args] filename]");
+	exit(0);
+}
+
+static void
+version(void)
+{
+	puts("peek version "VERSION);
+	exit(0);
+}
 
 int
 main(int argc, char **argv)
@@ -10,6 +27,12 @@ main(int argc, char **argv)
 	struct utimbuf ub;
 	pid_t pid;
 	int status;
+
+	if (argc < 2)
+		return 1;
+
+	if (!strcmp(argv[1], "-h")) usage();
+	if (!strcmp(argv[1], "-v")) version();
 
 	stat(argv[argc-1], &sb);
 	ub.actime = sb.st_atime;
