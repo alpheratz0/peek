@@ -15,6 +15,7 @@
 
 */
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -37,33 +38,37 @@ version(void)
 	exit(0);
 }
 
-int
-main(int argc, char **argv)
+static void
+peek(const char *file, char **cmd)
 {
 	struct stat sb;
 	struct utimbuf ub;
 	pid_t pid;
 	int status;
 
-	if (argc < 2)
-		return 1;
-	if (!strcmp(argv[1], "-h"))
-		usage();
-	if (!strcmp(argv[1], "-v"))
-		version();
-	if (stat(argv[argc-1], &sb) < 0)
-		return 2;
+	if (stat(file, &sb) < 0) {
+		fprintf(stderr, "peek: stat failed: %s\n",
+				strerror(errno));
+		exit(2);
+	}
 
 	ub.actime = sb.st_atime;
 	ub.modtime = sb.st_mtime;
 	pid = fork();
 
 	if (pid == 0) {
-		execvp(argv[1], &argv[1]);
+		execvp(cmd[0], cmd);
 	} else {
 		waitpid(pid, &status, 0);
-		utime(argv[argc-1], &ub);
+		utime(file, &ub);
 	}
+}
 
+int
+main(int argc, char **argv)
+{
+	if (argc < 2 || !strcmp(argv[1], "-h")) usage();
+	else if (!strcmp(argv[1], "-v")) version();
+	else peek(argv[argc-1], argv+1);
 	return 0;
 }
