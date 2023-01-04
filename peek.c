@@ -45,17 +45,13 @@ peek(const char *file, char **cmd)
 	struct utimbuf ub;
 	pid_t pid;
 	int status;
-
 	if (stat(file, &sb) < 0) {
-		fprintf(stderr, "peek: stat failed: %s\n",
-				strerror(errno));
+		fprintf(stderr, "peek: stat failed: %s\n", strerror(errno));
 		exit(2);
 	}
-
 	ub.actime = sb.st_atime;
 	ub.modtime = sb.st_mtime;
 	pid = fork();
-
 	if (pid == 0) {
 		execvp(cmd[0], cmd);
 	} else {
@@ -67,8 +63,13 @@ peek(const char *file, char **cmd)
 int
 main(int argc, char **argv)
 {
-	if (argc < 2 || !strcmp(argv[1], "-h")) usage();
-	else if (!strcmp(argv[1], "-v")) version();
-	else peek(argv[argc-1], argv+1);
+	if (argc < 2 || !strcmp(argv[1], "-h")) {
+		usage();
+	} else if (!strcmp(argv[1], "-v")) {
+		version();
+	} else {
+		peek(argv[argc - 1], argv + 1);
+	}
+
 	return 0;
 }
