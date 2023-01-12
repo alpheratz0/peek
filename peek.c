@@ -23,6 +23,20 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <stdarg.h>
+
+static void
+die(const char *fmt, ...)
+{
+	va_list args;
+
+	fputs("peek: ", stderr);
+	va_start(args, fmt);
+	vfprintf(stderr, fmt, args);
+	va_end(args);
+	fputc('\n', stderr);
+	exit(1);
+}
 
 static void
 usage(void)
@@ -46,16 +60,16 @@ peek(const char *file, char **cmd)
 	pid_t pid;
 	int status;
 
-	if (stat(file, &sb) < 0) {
-		fprintf(stderr, "peek: stat failed: %s\n", strerror(errno));
-		exit(2);
-	}
+	if (stat(file, &sb) < 0)
+		die("stat failed: %s", strerror(errno));
 
 	ub.actime = sb.st_atime;
 	ub.modtime = sb.st_mtime;
 	pid = fork();
 
-	if (pid == 0) {
+	if (pid < 0) {
+		die("fork failed: %s", strerror(errno));
+	} else if (pid == 0) {
 		execvp(cmd[0], cmd);
 	} else {
 		waitpid(pid, &status, 0);
