@@ -81,10 +81,10 @@ peek(const char *file, char **cmd)
 int
 main(int argc, char **argv)
 {
-	if (argc < 2 || !strcmp(argv[1], "-h")) {
-		usage();
-	} else if (!strcmp(argv[1], "-v")) {
+	if (argc > 1 && !strcmp(argv[1], "-v")) {
 		version();
+	} else if (argc < 3 || !strcmp(argv[1], "-h")) {
+		usage();
 	} else {
 		peek(argv[argc - 1], argv + 1);
 	}
