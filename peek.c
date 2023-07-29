@@ -54,32 +54,47 @@ version(void)
 }
 
 static void
-peek(const char *file, char **cmd)
+run_cmd(char **cmd)
 {
-	struct stat sb;
-	struct utimbuf ub;
-	pid_t pid;
 	int status;
+	pid_t pid;
 
-	if (stat(file, &sb) < 0)
-		die("stat failed: %s", strerror(errno));
-
-	ub.actime = sb.st_atime;
-	ub.modtime = sb.st_mtime;
 	pid = fork();
 
 	if (pid < 0) {
 		die("fork failed: %s", strerror(errno));
 	} else if (pid == 0) {
 		execvp(cmd[0], cmd);
+		die("execvp failed: %s", strerror(errno));
 	} else {
 		waitpid(pid, &status, 0);
-		utime(file, &ub);
 	}
 }
 
+static void
+get_file_utimbuf(const char *file, struct utimbuf *ub)
+{
+	struct stat sb;
+
+	if (stat(file, &sb) < 0) {
+		die("stat failed: %s", strerror(errno));
+	}
+
+	ub->actime  = sb.st_atime;
+	ub->modtime = sb.st_mtime;
+}
+
+static void
+peek(const char *file, char **cmd)
+{
+	struct utimbuf ub;
+	get_file_utimbuf(file, &ub);
+	run_cmd(cmd);
+	utime(file, &ub);
+}
+
 int
-main(int argc, char **argv)
+main(int argc, char *argv[])
 {
 	if (argc > 1 && !strcmp(argv[1], "-v")) {
 		version();
