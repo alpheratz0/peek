@@ -11,7 +11,7 @@ peek: peek.o
 clean:
 	rm -f peek peek.o peek-$(VERSION).tar.gz
 
-install: peek
+install: all
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	cp -f peek $(DESTDIR)$(PREFIX)/bin
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/peek
